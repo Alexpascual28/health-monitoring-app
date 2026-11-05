@@ -1,0 +1,142 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CarePulse 24x7 IoT Remote Health Monitoring Platform API",
+    "version": "1.0.0",
+    "description": "Multi-tenant wearable ingestion, configurable wellness rules engine, P1-P4 alerting & escalation, DPDP Act 2023 consent management, immutable hash-chained audit log, 24x7 Caregiver Console, and Overseas Family Mobile App API."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Local Development & UAT Server"
+    },
+    {
+      "url": "https://api.carepulse.co.uk",
+      "description": "UK Production Cloud Region (eu-west-2 London)"
+    }
+  ],
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Platform health, UK region residency, TLS/AES-256 status, and audit chain integrity",
+        "responses": {
+          "200": { "description": "Platform healthy" }
+        }
+      }
+    },
+    "/api/v1/bootstrap": {
+      "get": {
+        "summary": "Fetch Care Centre residents, active/historical alerts, device fleet, RBAC matrix, and audit log snapshot",
+        "responses": {
+          "200": { "description": "Bootstrap payload" }
+        }
+      }
+    },
+    "/api/v1/patients/{patientId}": {
+      "get": {
+        "summary": "Fetch resident profile, raw telemetry stream, 1m/5m/1h roll-ups, and FHIR R4 / ABDM consent artefacts (Audited)",
+        "parameters": [
+          { "name": "patientId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Resident detail & roll-ups" },
+          "404": { "description": "Resident not found" }
+        }
+      }
+    },
+    "/api/v1/patients/{patientId}/thresholds": {
+      "patch": {
+        "summary": "Update per-patient wellness & geofence thresholds at runtime without deployment (Audited)",
+        "parameters": [
+          { "name": "patientId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Thresholds updated" }
+        }
+      }
+    },
+    "/api/v1/patients/{patientId}/consent": {
+      "patch": {
+        "summary": "Update or withdraw DPDP Act 2023 resident consent (immediately redacting Family App view when withdrawn)",
+        "parameters": [
+          { "name": "patientId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Consent updated and audited" }
+        }
+      }
+    },
+    "/api/v1/alerts/{alertId}/action": {
+      "post": {
+        "summary": "Assign, Acknowledge, Escalate, or Close an alert with mandatory caregiver disposition notes",
+        "parameters": [
+          { "name": "alertId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Alert state updated" }
+        }
+      }
+    },
+    "/api/v1/ingest/telemetry": {
+      "post": {
+        "summary": "HTTPS wearable telemetry & event ingestion endpoint (per-device HMAC/X.509 auth, rate-limited, deduplicated)",
+        "responses": {
+          "202": { "description": "Telemetry accepted" },
+          "400": { "description": "Rejected by auth, rate-limit, or validation" }
+        }
+      }
+    },
+    "/api/v1/ingest/simulate": {
+      "post": {
+        "summary": "Interactive Virtual Wearable Band simulator ingestion endpoint",
+        "responses": {
+          "200": { "description": "Simulated packet processed" }
+        }
+      }
+    },
+    "/api/v1/simulator/load-test": {
+      "post": {
+        "summary": "Execute 5,000-band load & SLA simulation returning p50/p95/p99 latencies and zero-silent-loss verification",
+        "responses": {
+          "200": { "description": "Simulation benchmark summary" }
+        }
+      }
+    },
+    "/api/v1/family/otp/request": {
+      "post": {
+        "summary": "Request 6-digit OTP for international E.164 mobile number (+1, +44, +91, +61, +65)",
+        "responses": {
+          "200": { "description": "OTP issued" }
+        }
+      }
+    },
+    "/api/v1/family/otp/verify": {
+      "post": {
+        "summary": "Verify international OTP code for Family Mobile App",
+        "responses": {
+          "200": { "description": "OTP verified" },
+          "401": { "description": "Invalid OTP" }
+        }
+      }
+    },
+    "/api/v1/family/patients/{patientId}/calm-view": {
+      "get": {
+        "summary": "Fetch calm, consent-limited 'Is my parent OK?' mobile view with alert disposition history",
+        "parameters": [
+          { "name": "patientId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Calm family view payload" }
+        }
+      }
+    },
+    "/api/v1/admin/roster/import-csv": {
+      "post": {
+        "summary": "Bulk import pilot care-centre residents from CSV and auto-provision wearable bands",
+        "responses": {
+          "200": { "description": "Roster imported" }
+        }
+      }
+    }
+  }
+}
