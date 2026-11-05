@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: carepulse-timescaledb-uk
+    environment:
+      POSTGRES_DB: carepulse_uk
+      POSTGRES_USER: carepulse_admin
+      POSTGRES_PASSWORD: change_in_vault_prod
+      TZ: Europe/London
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    container_name: carepulse-mqtt-tls
+    ports:
+      - "1883:1883"
+      - "8883:8883"
+    restart: unless-stopped
+
+  carepulse-platform:
+    build: .
+    container_name: carepulse-platform
+    env_file:
+      - .env.example
+    ports:
+      - "4000:4000"
+      - "5173:5173"
+    depends_on:
+      - timescaledb
+      - mqtt-broker
+    restart: unless-stopped
