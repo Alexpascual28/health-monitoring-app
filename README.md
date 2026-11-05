@@ -112,10 +112,3 @@ All required agency deliverables are located in the [`docs/`](file:///c:/Project
 8. [**UK Cloud Terraform IaC (`infra/terraform/main.tf`)**](file:///c:/Projects/Antigravity/health-monitoring-app/infra/terraform/main.tf): AWS `eu-west-2` IaC + `dev`, `qa`, `uat`, and `prod` environment configurations.
 
 ---
-
-## 7. Trunk-Based Git & GitHub Workflow
-
-This repository follows strict **Trunk-Based Development**:
-- **Issues & Triage**: Every task or bug is tracked as a GitHub Issue assigned to `Alexpascual28`, tagged with color-coded labels (`Type: enhancement`, `Type: documentation`, `Type: bug`, `priority: high`, `priority: low`), and mapped to the 7 Engagement Milestones.
-- **Short-Lived Branches**: Single-level slash prefixes (`chore/1-repo-scaffolding`, `feat/2-canonical-schema-and-adapter`, `feat/3-ingestion-and-band-simulator`, `feat/4-rules-alerting-consent-rbac`, `feat/5-console-family-simulator-ui`, `feat/6-iac-cicd-and-test-suite`, `docs/7-rfp-deliverables-and-readme`).
-- **Pull Requests & Automated Issue Closure**: Every branch is verified via CI/tests, opened as a PR linking its issue (`Fixes #<issue-number>`), merged into `main`, and deleted immediately after merging so `main` is always clean, tested, and deployable.
